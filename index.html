@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache">
+<title>MatriFabioCony</title>
+<style>
+body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;
+font-family:system-ui,sans-serif;color:#fff;background:linear-gradient(160deg,#1f3d9c,#151d52)}
+h1{font-size:30px;margin:0 0 12px}p{font-size:17px;opacity:.9;margin:6px 20px}
+a{display:inline-block;margin-top:18px;background:#fff;color:#333;font-weight:800;padding:12px 22px;border-radius:6px;text-decoration:none}
+.giro{width:46px;height:46px;margin:0 auto 18px;border-radius:8px;background:conic-gradient(#e21b3c 0 25%,#1368ce 0 50%,#d89e00 0 75%,#26890c 0);animation:g 1.2s linear infinite}
+@keyframes g{to{transform:rotate(360deg)}}
+</style></head>
+<body><div>
+<div class="giro"></div>
+<h1>MatriFabioCony &#9829;</h1>
+<p id="mensaje">Conectando con el juego…</p>
+<div id="boton"></div>
+</div>
+<script>
+async function intentar() {
+  try {
+    // ?t=... evita que el celular o GitHub entreguen una versión antigua del link
+    const respuesta = await fetch("link.json?t=" + Date.now(), { cache: "no-store" });
+    const datos = await respuesta.json();
+    if (datos.link) {
+      // Se verifica que el juego esté encendido antes de redirigir
+      try {
+        const ping = await fetch(datos.link + "/ping?t=" + Date.now(), { cache: "no-store" });
+        if (ping.ok) { location.replace(datos.link); return; }
+      } catch (e) {}
+    }
+  } catch (e) {}
+  document.getElementById("mensaje").textContent = "El juego aún no comienza. Esta página se conectará sola apenas empiece.";
+  setTimeout(intentar, 5000);
+}
+intentar();
+</script>
+</body></html>
